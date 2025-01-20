@@ -1,0 +1,35 @@
+@port = 8080
+@base-url = http://localhost:{{port}}
+@orders-api = /api/orders
+
+# Create a new Order
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "Paul Barthel",
+  "customerEmail": "paul@example.com",
+  "products": [
+    { "productId": 1, "quantity": 2 },
+    { "productId": 2, "quantity": 1 }
+  ]
+}
+###
+
+# Get all Orders
+GET {{base-url}}{{orders-api}}
+###
+
+# Get Order by Id
+@id = 1
+GET {{base-url}}{{orders-api}}/{{id}}
+###
+
+# Update Order Status
+@update-id = 1
+PUT {{base-url}}{{orders-api}}/{{update-id}}/status?status=COMPLETED
+###
+
+# Try to Update Order Status for non-existing Order (Expected: 400 Bad Request)
+PUT {{base-url}}{{orders-api}}/999/status?status=CANCELLED
+###

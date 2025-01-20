@@ -1,0 +1,29 @@
+@port = 8080
+@base-url = http://localhost:{{port}}
+@inventory-api = /api/inventory
+
+# Create or Update Inventory for a Product
+# Note: The Product must already exist in the database
+POST {{base-url}}{{inventory-api}}?productId=52&quantity=15
+Content-Type: application/json; charset=utf-8
+
+###
+
+# Get All Inventories
+GET {{base-url}}{{inventory-api}}
+###
+
+# Get Inventory by ID
+@id = 2
+GET {{base-url}}{{inventory-api}}/{{id}}
+###
+
+# Update Inventory Quantity by ID
+@update-id = 1
+PUT {{base-url}}{{inventory-api}}/{{update-id}}?quantity=50
+###
+
+# Try to Update Inventory with Negative Quantity (Expected: Error)
+PUT {{base-url}}{{inventory-api}}/{{update-id}}?quantity=-10
+###
+

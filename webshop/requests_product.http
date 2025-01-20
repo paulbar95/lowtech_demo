@@ -1,0 +1,53 @@
+@port = 8080
+@base-url = http://localhost:{{port}}
+@product-api = /api/products
+
+# Create a new Product
+POST {{base-url}}{{product-api}}
+Content-Type: application/json; charset=utf-8
+
+{
+  "name": "Wooden Chair",
+  "description": "Plain wooden knob",
+  "price": 76.99,
+  "category": "seat",
+  "imageUrl": "https://example.com/knob.jpg"
+}
+###
+#{
+#    "name": "Wooden Pedestal",
+#    "description": "Formerly known as Paddle-Stool",
+#    "price": 9999.99,
+#    "category": "Craftsmanship",
+#    "imageUrl": "https://example.com/pedestal.jpg"
+#}
+###
+
+# Get all Products
+GET {{base-url}}{{product-api}}
+###
+
+# Get Product by Id
+@id = 1
+GET {{base-url}}{{product-api}}/{{id}}
+###
+
+#
+@category = Craftsmanship
+GET {{base-url}}{{product-api}}/category/{{category}}
+###
+
+# Update a Product by Id
+@update-id=4
+PUT {{base-url}}{{product-api}}/{{update-id}}
+Content-Type: application/json; charset=utf-8
+
+{
+  "name": "Wooden Pedestal",
+  "description": "Formerly known as Paddle-Stool",
+  "price": 9999.99,
+  "category": "Woodwork",
+  "imageUrl": "https://example.com/pedestal.jpg"
+}
+###
+
