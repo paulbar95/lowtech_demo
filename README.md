@@ -14,9 +14,10 @@ Demo workshop for lowtech GmbH - CloudComputing WiSe2425
 
 ## Setup the backend
 1. Open the folder `webshop` in Intellij (or any other suitable IDE).
-2. The IDE should automatically run the `build.gradle` file to load required dependencies. (If not run the `build.gradle` manually or `rebuild` the project.)
-3. Start the **backend server** by executing the `WebshopApplication.java`. (Your IDE should automatically detect a run-configuration pointing to the `WebshopApplication.java` - if not, configure it manually.)
-4. Your **backend server** is now running on **http://localhost:8080**.
+2. In your IDE select the **project settings** and install the Java SDK `corretto-17.0.13`. --> Set the project's SDK to `corretto-17.0.13`.
+3. The IDE should automatically run the `build.gradle` file to load required dependencies. (If not run the `build.gradle` manually or `rebuild` the project.)
+4. Start the **backend server** by executing the `WebshopApplication.java`. (Your IDE should automatically detect a run-configuration pointing to the `WebshopApplication.java` - if not, configure it manually.)
+5. Your **backend server** is now running on **http://localhost:8080**.
 
 ## Setup the frontend
 1. Open the folder `webshop_frontend` in Intellij (or any other suitable IDE).
