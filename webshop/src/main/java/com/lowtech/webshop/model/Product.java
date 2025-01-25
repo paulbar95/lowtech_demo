@@ -16,7 +16,10 @@ public class Product extends AbstractEntity {
 
     private String name;
     private String description;
-    private Double price;
+
+    // cents
+    private int price;
+
     private String category;
     private String imageUrl;
 }
