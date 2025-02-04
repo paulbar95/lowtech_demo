@@ -1,146 +1,132 @@
-<script>
+<script setup>
+import { ref, onMounted } from "vue";
 import axios from "axios";
 
-export default {
-  name: "InventoryManagement",
-  data() {
-    return {
-      inventory: [],
-      products: [],
-      updatedQuantities: {},
-      newProductId: "",
-      newProductQuantity: 0,
-    };
-  },
-  methods: {
-    async fetchInventory() {
-      try {
-        const response = await axios.get("http://localhost:8080/api/inventory");
-        this.inventory = response.data;
-        // Populate updatedQuantities for all inventory items
-        this.inventory.forEach(
-            (item) => (this.updatedQuantities[item.id] = item.quantity)
-        );
-      } catch (error) {
-        console.error("Error fetching inventory:", error);
-      }
-    },
-    async fetchProducts() {
-      try {
-        const response = await axios.get("http://localhost:8080/api/products");
-        this.products = response.data;
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    },
-    async updateQuantity(id) {
-      try {
-        const quantity = this.updatedQuantities[id];
-        await axios.put(`http://localhost:8080/api/inventory/${id}`, null, {
-          params: { quantity },
-        });
-        alert("Quantity updated successfully!");
-        this.fetchInventory(); // Refresh inventory after update
-      } catch (error) {
-        console.error("Error updating quantity:", error);
-      }
-    },
-    async addInventoryEntry() {
-      if (!this.newProductId || this.newProductQuantity <= 0) {
-        alert("Please select a product and enter a valid quantity.");
-        return;
-      }
-      try {
-        await axios.post("http://localhost:8080/api/inventory", null, {
-          params: {
-            productId: this.newProductId,
-            quantity: this.newProductQuantity,
-          },
-        });
-        alert("New inventory entry added successfully!");
-        this.fetchInventory(); // Refresh inventory after adding
-      } catch (error) {
-        console.error("Error adding inventory entry:", error);
-      }
-    }
-  },
-  created() {
-    this.fetchInventory();
-    this.fetchProducts();
-  },
+const inventory = ref([]);
+const products = ref([]);
+const updatedQuantities = ref({});
+const newProductId = ref("");
+const newProductQuantity = ref(0);
+
+const fetchInventory = async () => {
+  try {
+    const response = await axios.get("http://localhost:5000/api/inventory");
+    inventory.value = response.data;
+    inventory.value.forEach(item => {
+      updatedQuantities.value[item._id] = item.quantity;
+    });
+  } catch (error) {
+    console.error("Error fetching inventory:", error);
+  }
 };
+
+const fetchProducts = async () => {
+  try {
+    const response = await axios.get("http://localhost:5000/api/products");
+    products.value = response.data;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+};
+
+const updateQuantity = async (id) => {
+  try {
+    const quantity = updatedQuantities.value[id];
+    await axios.patch(`http://localhost:5000/api/inventory/${id}`, { quantity });
+    fetchInventory();
+  } catch (error) {
+    console.error("Error updating quantity:", error);
+  }
+};
+
+const addInventoryEntry = async () => {
+  if (!newProductId.value || newProductQuantity.value <= 0) {
+    alert("Please select a product and enter a valid quantity.");
+    return;
+  }
+  try {
+    await axios.post("http://localhost:5000/api/inventory", {
+      productId: newProductId.value,
+      quantity: newProductQuantity.value
+    });
+    newProductId.value = "";
+    newProductQuantity.value = 0;
+    fetchInventory();
+  } catch (error) {
+    console.error("Error adding inventory entry:", error);
+  }
+};
+
+onMounted(() => {
+  fetchInventory();
+  fetchProducts();
+});
 </script>
 
 <template>
-  <div>
-    <h1>Inventory Management</h1>
-    <!-- Inventory List -->
-    <div class="inventory-list">
-      <div
-          v-for="item in inventory"
-          :key="item.id"
-          class="inventory-item"
-      >
-        <h2>{{ item.product.name }}</h2>
-        <p>Category: {{ item.product.category }}</p>
-        <p>Description: {{ item.product.description }}</p>
-        <p>Price: {{ item.product.price }}</p>
-        <p>Stock: {{ item.quantity }}</p>
-        <!-- Update Quantity -->
-        <div class="quantity-controls">
-          <input
-              v-model.number="updatedQuantities[item.id]"
-              type="number"
-              min="0"
-          />
-          <button @click="updateQuantity(item.id)">
-            Update Quantity
-          </button>
-        </div>
-      </div>
-    </div>
+  <div class="container-box">
+    <h2>Inventory Management</h2>
 
     <!-- Add New Inventory Entry -->
-    <div class="add-inventory">
-      <h2>Add New Inventory Entry</h2>
+    <div class="add-item-form">
       <select v-model="newProductId">
         <option value="">Select a Product</option>
-        <option
-            v-for="product in products"
-            :key="product.id"
-            :value="product.id"
-        >
+        <option v-for="product in products" :key="product._id" :value="product._id">
           {{ product.name }}
         </option>
       </select>
-      <input
-          v-model.number="newProductQuantity"
-          type="number"
-          placeholder="Enter Quantity"
-          min="1"
-      />
-      <button @click="addInventoryEntry">
-        Add to Inventory
-      </button>
+      <input v-model.number="newProductQuantity" type="number" min="1" placeholder="Quantity" />
+      <button class="button-primary" @click="addInventoryEntry">Add to Inventory</button>
+    </div>
+
+    <!-- Inventory List -->
+    <div class="inventory-list">
+      <div v-for="item in inventory" :key="item._id" class="inventory-item">
+        <h3>{{ item.product.name }}</h3>
+        <p>Category: {{ item.product.category }}</p>
+        <p>Description: {{ item.product.description }}</p>
+        <p>Price: ${{ item.product.price }}</p>
+        <p>Stock: {{ item.quantity }}</p>
+        <div class="button-group">
+          <input v-model.number="updatedQuantities[item._id]" type="number" min="0" />
+          <button class="button-secondary" @click="updateQuantity(item._id)">Update Quantity</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .inventory-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
 }
+
 .inventory-item {
-  border: 1px solid #ccc;
+  background: var(--background-light);
   padding: 15px;
-  width: 300px;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 }
-.quantity-controls {
+
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-top: 10px;
 }
-.add-inventory {
-  margin-top: 20px;
+
+.add-item-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-item-form select,
+.add-item-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
 }
 </style>

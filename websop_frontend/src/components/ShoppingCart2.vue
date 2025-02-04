@@ -1,123 +1,132 @@
-<script>
+<script setup>
+import { ref, onMounted } from "vue";
 import axios from "axios";
 
-export default {
-  name: "ShoppingCart",
-  data() {
-    return {
-      cart: [],
-    };
-  },
-  computed: {
-    total() {
-      return this.cart.reduce(
-          (sum, item) => sum + item.quantity * item.product.price,
-          0
-      );
-    },
-  },
-  methods: {
-    loadCart() {
-      const savedCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
-      this.cart = savedCart;
-    },
-    saveCart() {
-      localStorage.setItem("shoppingCart", JSON.stringify(this.cart));
-    },
-    increaseQuantity(productId) {
-      const item = this.cart.find((i) => i.productId === productId);
-      if (item) {
-        item.quantity++;
-        this.saveCart();
-      }
-    },
-    decreaseQuantity(productId) {
-      const item = this.cart.find((i) => i.productId === productId);
-      if (item && item.quantity > 1) {
-        item.quantity--;
-        this.saveCart();
-      }
-    },
-    removeFromCart(productId) {
-      this.cart = this.cart.filter((item) => item.productId !== productId);
-      this.saveCart();
-    },
-    async checkout() {
-      if (this.cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-      }
+const cart = ref([]);
+const customer = ref({ name: "", email: "" });
 
-      const order = {
-        customerName: "John Doe", // Replace with user input if needed
-        customerEmail: "john.doe@example.com", // Replace with user input if needed
-        products: this.cart.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-        })),
-      };
-
-      try {
-        await axios.post("http://localhost:8080/api/orders", order);
-        alert("Order placed successfully!");
-        this.cart = [];
-        this.saveCart();
-      } catch (error) {
-        console.error("Error during checkout:", error);
-        alert("Failed to place the order.");
-      }
-    },
-  },
-  created() {
-    this.loadCart();
-  },
+const loadCart = () => {
+  cart.value = JSON.parse(localStorage.getItem("shoppingCart")) || [];
 };
+
+const saveCart = () => {
+  localStorage.setItem("shoppingCart", JSON.stringify(cart.value));
+};
+
+const modifyQuantity = (productId, change) => {
+  const item = cart.value.find((i) => i.productId === productId);
+  if (item && (item.quantity + change) >= 1) {
+    item.quantity += change;
+    saveCart();
+  }
+};
+
+const removeFromCart = (productId) => {
+  cart.value = cart.value.filter((item) => item.productId !== productId);
+  saveCart();
+};
+
+const total = () => {
+  return cart.value.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
+};
+
+const checkout = async () => {
+  if (cart.value.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+  if (!customer.value.name || !customer.value.email) {
+    alert("Please enter your name and email.");
+    return;
+  }
+  const order = {
+    customerName: customer.value.name,
+    customerEmail: customer.value.email,
+    products: cart.value.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+  };
+  try {
+    await axios.post("http://localhost:5000/api/orders", order);
+    alert("Order placed successfully!");
+    cart.value = [];
+    saveCart();
+    customer.value = { name: "", email: "" };
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    alert("Failed to place the order.");
+  }
+};
+
+onMounted(loadCart);
 </script>
 
 <template>
-  <div>
-    <h1>Shopping Cart</h1>
+  <div class="container-box">
+    <h2>Your Cart</h2>
+
     <div v-if="cart.length === 0">
-      <p>Your cart is empty. Add some products from the catalog!</p>
+      <p>Your cart is empty. Start shopping now!</p>
     </div>
-    <div v-else>
-      <div
-          v-for="item in cart"
-          :key="item.productId"
-          class="cart-item"
-      >
-        <h2>{{ item.product.name }}</h2>
-        <p>Price: {{ item.product.price }} €</p>
-        <p>Category: {{ item.product.category }}</p>
-        <p>Total: {{ (item.quantity * item.product.price).toFixed(2) }} €</p>
-        <div class="quantity-controls">
-          <button @click="decreaseQuantity(item.productId)">-</button>
-          <span>{{ item.quantity }}</span>
-          <button @click="increaseQuantity(item.productId)">+</button>
+
+    <div v-else class="cart-list">
+      <div v-for="item in cart" :key="item.productId" class="cart-item">
+        <div>
+          <h3>{{ item.product.name }}</h3>
+          <p>Price: ${{ item.product.price }}</p>
+          <p>Category: {{ item.product.category }}</p>
+          <p>Total: ${{ (item.quantity * item.product.price).toFixed(2) }}</p>
         </div>
-        <button @click="removeFromCart(item.productId)">Remove</button>
+        <div class="button-group">
+          <button class="button-secondary" @click="modifyQuantity(item.productId, -1)">-</button>
+          <span>{{ item.quantity }}</span>
+          <button class="button-secondary" @click="modifyQuantity(item.productId, 1)">+</button>
+        </div>
+        <button class="button-primary" @click="removeFromCart(item.productId)">Remove</button>
       </div>
-      <div class="checkout">
-        <h2>Total Price: {{ total.toFixed(2) }} €</h2>
-        <button @click="checkout">Checkout</button>
+
+      <div class="checkout-section">
+        <h3>Total: ${{ total().toFixed(2) }}</h3>
+        <input v-model="customer.name" type="text" placeholder="Your Name" />
+        <input v-model="customer.email" type="email" placeholder="Your Email" />
+        <button class="button-primary" @click="checkout">Place Order</button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.cart-item {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 10px;
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 20px;
 }
-.quantity-controls {
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--background-light);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button-group {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.checkout {
+
+.checkout-section {
   margin-top: 20px;
-  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkout-section input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
 }
 </style>
