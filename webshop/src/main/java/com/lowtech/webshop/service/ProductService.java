@@ -2,6 +2,8 @@ package com.lowtech.webshop.service;
 
 import com.lowtech.webshop.model.Product;
 import com.lowtech.webshop.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,9 @@ import java.util.Optional;
  */
 @Service
 public class ProductService {
+
+    @Autowired
+    private Environment environment;
 
     private final ProductRepository productRepository;
 
@@ -44,7 +49,7 @@ public class ProductService {
                     existingProduct.setDescription(product.getDescription());
                     existingProduct.setPrice(product.getPrice());
                     existingProduct.setCategory(product.getCategory());
-                    existingProduct.setImageUrl(product.getImageUrl());
+                    existingProduct.setImageUrl(product.getImageUrl(environment));
                     return productRepository.save(existingProduct);
                 }).orElseThrow(() -> new IllegalArgumentException("Product with ID " + id + " not found"));
     }
