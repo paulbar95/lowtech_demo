@@ -31,6 +31,7 @@ public class OrderController {
             Order order = orderService.createOrder(
                     orderRequest.getCustomerName(),
                     orderRequest.getCustomerEmail(),
+                    orderRequest.getPaymentMethod(),
                     orderRequest.getProducts()
             );
             return ResponseEntity.ok(order);

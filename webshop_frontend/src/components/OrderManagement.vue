@@ -47,6 +47,7 @@ export default {
     <div v-for="order in orders" :key="order.id" class="order-card">
       <h2>Order #{{ order.id }}</h2>
       <p>Customer: {{ order.customerName }} ({{ order.customerEmail }})</p>
+      <p>Payment Method: {{ order.paymentMethod}}</p>
       <p>Status: {{ order.status }}</p>
       <ul>
         <li v-for="item in order.products" :key="item.id">

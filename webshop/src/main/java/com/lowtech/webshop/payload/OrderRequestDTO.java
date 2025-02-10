@@ -16,4 +16,33 @@ public class OrderRequestDTO {
     private String customerName;
     private String customerEmail;
     private List<OrderProductDTO> products;
+    private String paymentMethod; // z. B. "PAYPAL" oder "OTHER"
+
+    // Getter & Setter
+    public String getCustomerName() {
+        return customerName;
+    }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+    public List<OrderProductDTO> getProducts() {
+        return products;
+    }
+    public void setProducts(List<OrderProductDTO> products) {
+        this.products = products;
+    }
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
 }
+
+

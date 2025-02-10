@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.core.env.Environment;
+import jakarta.persistence.Column;
+
+
 
 /**
  * @author Paul Barthel
@@ -16,7 +19,7 @@ public class Product extends AbstractEntity {
     @Getter @Setter
     private String name;
 
-    @Getter @Setter
+    @Getter @Setter @Column(length = 1000)
     private String description;
 
     @Getter @Setter
@@ -24,15 +27,21 @@ public class Product extends AbstractEntity {
 
     @Getter @Setter
     private String category;
-
+    // Mit Lombok:
+    @Getter @Setter
     private String imageUrl; // relative image path in bucket
 
-    public String getImageUrl(Environment environment) {
-        // prefix with current s3 bucket
-        return environment.getProperty("env.data.imageS3url") + imageUrl;
-    }
-    public void setImageUrl(String url) {
-        // remove base url before storage
-        imageUrl = url.substring(url.lastIndexOf('/') + 1);
-    }
+
 }
+/*
+@Getter @Setter
+private String imageUrl; // relative image path in bucket
+
+public String getImageUrl(Environment environment) {
+    // prefix with current s3 bucket
+    return environment.getProperty("env.data.imageS3url") + imageUrl;
+}
+public void setImageUrl(String url) {
+    // remove base url before storage
+    imageUrl = url.substring(url.lastIndexOf('/') + 1);
+}*/

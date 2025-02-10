@@ -49,7 +49,7 @@ public class ProductService {
                     existingProduct.setDescription(product.getDescription());
                     existingProduct.setPrice(product.getPrice());
                     existingProduct.setCategory(product.getCategory());
-                    existingProduct.setImageUrl(product.getImageUrl(environment));
+                    existingProduct.setImageUrl(product.getImageUrl());
                     return productRepository.save(existingProduct);
                 }).orElseThrow(() -> new IllegalArgumentException("Product with ID " + id + " not found"));
     }

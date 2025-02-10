@@ -29,10 +29,17 @@ public class Order extends AbstractEntity {
         COMPLETED,
         CANCELLED
     }
+    public enum PaymentMethod {
+        PAYPAL,
+        KLARNA,
+        CREDITCARD
+    }
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
     private String customerName;
     private String customerEmail;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     @JsonManagedReference
     private List<OrderItem> products = new ArrayList<>();
