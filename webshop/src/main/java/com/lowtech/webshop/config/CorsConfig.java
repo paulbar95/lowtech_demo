@@ -8,7 +8,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 /**
  * @author Paul Barthel
  * @date 19.01.2025
@@ -16,24 +16,29 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 @EnableWebMvc
-public class CorsConfig {
+public class CorsConfig implements WebMvcConfigurer {
 
     @Autowired
     private Environment environment;
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer corsConfigurerBean() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(Filters.filterNotNull(
-                                "http://localhost:5173",
-                                environment.getProperty("env.data.imageS3url")
-                        )) // Allow data origins
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Specify allowed HTTP methods
-                        .allowedHeaders("*"); // Allow all headers
+                        .allowedOrigins("http://localhost:5173",
+                                environment.getProperty("env.data.imageS3url"))
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*");
             }
         };
+    }
+
+    // Hier überschreibst du addResourceHandlers im *eigenen* Config-Klassenkontext
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/images/");
     }
 }

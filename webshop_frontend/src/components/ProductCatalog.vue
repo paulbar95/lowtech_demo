@@ -87,6 +87,7 @@ export default {
           class="product-card"
       >
         <h2>{{ product.name }}</h2>
+        <img :src="`http://localhost:8080/images/${product.imageUrl}`" :alt="product.name" />
         <p>{{ product.description }}</p>
         <p>Price: {{ product.price }}</p>
         <button @click="addToCart(product)">Add to Cart</button>
@@ -109,4 +110,13 @@ export default {
   padding: 15px;
   width: 200px;
 }
+
+.product-card img {
+  max-width: 100%;
+  max-height: 150px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
 </style>
