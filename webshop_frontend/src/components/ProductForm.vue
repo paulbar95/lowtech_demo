@@ -16,7 +16,7 @@ const submitForm = async () => {
     return;
   }
   try {
-    await axios.post("http://localhost:5000/api/products", product.value);
+    await axios.post("http://localhost:8080/api/products", product.value);
     alert("Product added successfully!");
     resetForm();
   } catch (error) {

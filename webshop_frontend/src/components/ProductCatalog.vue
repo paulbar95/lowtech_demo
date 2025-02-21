@@ -8,7 +8,7 @@ const selectedCategory = ref("");
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/products");
+    const response = await axios.get("http://localhost:8080/api/products");
     products.value = response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -31,12 +31,12 @@ const filteredProducts = computed(() => {
 
 const addToCart = (product) => {
   const cart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
-  const existingItem = cart.find((item) => item.productId === product._id);
+  const existingItem = cart.find((item) => item.productId === product.id);
 
   if (existingItem) {
     existingItem.quantity++;
   } else {
-    cart.push({ productId: product._id, product, quantity: 1 });
+    cart.push({ productId: product.id, product, quantity: 1 });
   }
 
   localStorage.setItem("shoppingCart", JSON.stringify(cart));

@@ -10,7 +10,7 @@ const newProductQuantity = ref(0);
 
 const fetchInventory = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/inventory");
+    const response = await axios.get("http://localhost:8080/api/inventory");
     inventory.value = response.data;
     inventory.value.forEach(item => {
       updatedQuantities.value[item._id] = item.quantity;
@@ -22,7 +22,7 @@ const fetchInventory = async () => {
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/products");
+    const response = await axios.get("http://localhost:8080/api/products");
     products.value = response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -32,7 +32,7 @@ const fetchProducts = async () => {
 const updateQuantity = async (id) => {
   try {
     const quantity = updatedQuantities.value[id];
-    await axios.patch(`http://localhost:5000/api/inventory/${id}`, { quantity });
+    await axios.patch(`http://localhost:8080/api/inventory/${id}`, { quantity });
     fetchInventory();
   } catch (error) {
     console.error("Error updating quantity:", error);

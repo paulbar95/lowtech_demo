@@ -6,7 +6,7 @@ const orders = ref([]);
 
 const fetchOrders = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/orders");
+    const response = await axios.get("http://localhost:8080/api/orders");
     orders.value = response.data;
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -15,7 +15,7 @@ const fetchOrders = async () => {
 
 const updateOrderStatus = async (orderId, newStatus) => {
   try {
-    await axios.patch(`http://localhost:5000/api/orders/${orderId}`, { status: newStatus });
+    await axios.patch(`http://localhost:8080/api/orders/${orderId}`, { status: newStatus });
     alert("Order status updated successfully!");
     fetchOrders();
   } catch (error) {

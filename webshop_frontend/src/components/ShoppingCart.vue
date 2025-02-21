@@ -69,6 +69,7 @@
 
 <script>
 import axios from "axios";
+import { ref, onMounted } from "vue";
 
 export default {
   name: "ShoppingCart",
@@ -149,6 +150,7 @@ export default {
           quantity: item.quantity,
         })),
       };
+      console.log("order:", order.products[0])
 
       try {
         await axios.post("http://localhost:8080/api/orders", order);
@@ -181,7 +183,7 @@ const addProductToCart = (product) => {
   alert("Product added to cart!");
 };
 
-onMounted(loadCart);
+// onMounted(this.loadCart);
 </script>
 
 <style scoped>
