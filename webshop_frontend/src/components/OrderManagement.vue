@@ -1,41 +1,29 @@
-<script>
+<script setup>
+import { ref, onMounted } from "vue";
 import axios from "axios";
 
-export default {
-  name: "OrderManagement",
-  data() {
-    return {
-      orders: [], // Stores the list of orders
-    };
-  },
-  methods: {
-    // Fetch all orders from the backend
-    async fetchOrders() {
-      try {
-        const response = await axios.get("http://localhost:8080/api/orders");
-        this.orders = response.data;
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    },
+const orders = ref([]);
 
-    // Update the status of an order
-    async updateOrderStatus(orderId, newStatus) {
-      try {
-        await axios.put(`http://localhost:8080/api/orders/${orderId}/status`, null, {
-          params: { status: newStatus },
-        });
-        alert("Order status updated successfully!");
-        this.fetchOrders(); // Refresh orders after update
-      } catch (error) {
-        console.error("Error updating order status:", error);
-      }
-    },
-  },
-  created() {
-    this.fetchOrders(); // Fetch orders when the component is created
-  },
+const fetchOrders = async () => {
+  try {
+    const response = await axios.get("http://localhost:5000/api/orders");
+    orders.value = response.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+  }
 };
+
+const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    await axios.patch(`http://localhost:5000/api/orders/${orderId}`, { status: newStatus });
+    alert("Order status updated successfully!");
+    fetchOrders();
+  } catch (error) {
+    console.error("Error updating order status:", error);
+  }
+};
+
+onMounted(fetchOrders);
 </script>
 
 <template>
@@ -64,13 +52,26 @@ export default {
 </template>
 
 <style scoped>
-.order-card {
-  border: 1px solid #ccc;
-  margin-bottom: 20px;
-  padding: 15px;
-  border-radius: 5px;
+.order-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
-.status-controls button {
-  margin-right: 10px;
+
+.order-card {
+  background: var(--background-light);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-card h3 {
+  margin-bottom: 10px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
 }
 </style>

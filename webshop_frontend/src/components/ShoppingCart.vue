@@ -169,27 +169,52 @@ export default {
     this.loadCart();
   },
 };
+
+const addProductToCart = (product) => {
+  const existingItem = cart.value.find((item) => item.productId === product._id);
+  if (existingItem) {
+    existingItem.quantity++;
+  } else {
+    cart.value.push({ productId: product._id, product, quantity: 1 });
+  }
+  saveCart();
+  alert("Product added to cart!");
+};
+
+onMounted(loadCart);
 </script>
 
 <style scoped>
-.cart-item {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 10px;
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-.quantity-controls {
+
+.cart-item {
+  background: var(--background-light);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.cart-item:hover {
+  transform: scale(1.05);
+}
+
+.button-group {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin: 10px 0;
 }
-.checkout {
+
+.checkout-section {
   margin-top: 20px;
-  text-align: right;
-}
-.customer-info {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  gap: 10px;
 }
 .customer-info input {
   margin-bottom: 10px;
