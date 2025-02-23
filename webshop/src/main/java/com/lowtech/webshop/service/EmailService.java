@@ -6,6 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class EmailService {
 
     @Autowired

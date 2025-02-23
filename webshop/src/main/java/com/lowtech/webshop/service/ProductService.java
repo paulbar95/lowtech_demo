@@ -2,8 +2,13 @@ package com.lowtech.webshop.service;
 
 import com.lowtech.webshop.model.Product;
 import com.lowtech.webshop.repository.ProductRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +20,11 @@ import java.util.Optional;
  * @time 14:17
  */
 @Service
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class ProductService {
 
     @Autowired
-    private Environment environment;
+    private ProductServiceConfig config;
 
     private final ProductRepository productRepository;
 
@@ -57,4 +63,17 @@ public class ProductService {
     public void delete(long id) {
         productRepository.deleteById(id);
     }
+
+    public String getImageUrl() {
+        return config.getImageUrl();
+    }
+}
+
+@Getter
+@Setter
+@Component
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = "env")
+class ProductServiceConfig {
+    private String imageUrl;
 }

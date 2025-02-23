@@ -1,15 +1,19 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
+import { formatter } from "./PriceFormatter.js"
 
 const products = ref([]);
+const productImageUrl = ref("");
 const searchQuery = ref("");
 const selectedCategory = ref("");
 
 const fetchProducts = async () => {
   try {
     const response = await axios.get("http://localhost:8080/api/products");
+    const imageUrl = await axios.get("http://localhost:8080/api/products/imageUrl");
     products.value = response.data;
+    productImageUrl.value = imageUrl.data;
   } catch (error) {
     console.error("Error fetching products:", error);
   }
@@ -71,10 +75,10 @@ const addToCart = (product) => {
           class="product-card"
       >
         <h2>{{ product.name }}</h2>
-        <img :src="`http://localhost:8080/images/${product.imageUrl}`" :alt="product.name" />
+        <img :src="`${productImageUrl}${product.imageUrl}`" :alt="product.name" />
         <p>{{ product.description }}</p>
         <p>Category: {{ product.category }}</p>
-        <p>Price: {{ product.price }}</p>
+        <p>Price: {{ formatter.format(product.price / 100) }}</p>
         <button @click="addToCart(product)">Add to Cart</button>
       </div>
     </div>

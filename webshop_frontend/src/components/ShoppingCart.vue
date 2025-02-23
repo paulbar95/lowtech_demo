@@ -8,9 +8,9 @@
       <!-- Anzeige der Produkte im Warenkorb -->
       <div v-for="item in cart" :key="item.productId" class="cart-item">
         <h2>{{ item.product.name }}</h2>
-        <p>Price: {{ item.product.price }} €</p>
+        <p>Price: {{ (item.product.price / 100).toFixed(2) }}€</p>
         <p>Category: {{ item.product.category }}</p>
-        <p>Total: {{ (item.quantity * item.product.price).toFixed(2) }} €</p>
+        <p>Total: {{ ((item.quantity * item.product.price) / 100).toFixed(2) }}€</p>
         <div class="quantity-controls">
           <button @click="decreaseQuantity(item.productId)">-</button>
           <span>{{ item.quantity }}</span>
@@ -21,7 +21,7 @@
 
       <!-- Checkout-Bereich -->
       <div class="checkout">
-        <h2>Total Price: {{ total.toFixed(2) }} €</h2>
+        <h2>Total Price: {{ (total / 100).toFixed(2) }}€</h2>
         <div class="customer-info">
           <input
               type="text"
