@@ -23,6 +23,11 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/imageUrl")
+    public String getProductImageUrl() {
+        return productService.getImageUrl();
+    }
+
     @GetMapping
     public List<Product> getAllProducts() {
         return productService.findAll();
