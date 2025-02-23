@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
+import { formatter } from "./PriceFormatter.js"
 
 const products = ref([]);
 const productImageUrl = ref("");
@@ -77,7 +78,7 @@ const addToCart = (product) => {
         <img :src="`${productImageUrl}${product.imageUrl}`" :alt="product.name" />
         <p>{{ product.description }}</p>
         <p>Category: {{ product.category }}</p>
-        <p>Price: {{ product.price }}</p>
+        <p>Price: {{ formatter.format(product.price / 100) }}</p>
         <button @click="addToCart(product)">Add to Cart</button>
       </div>
     </div>
