@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import config from "@/config.js"; 
+
+const API_BASE_URL = config.API_BASE_URL;
 
 const inventory = ref([]);
 const products = ref([]);
@@ -10,7 +13,7 @@ const newProductQuantity = ref(0);
 
 const fetchInventory = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/inventory");
+    const response = await axios.get(API_BASE_URL+"/inventory");
     inventory.value = response.data;
     inventory.value.forEach(item => {
       updatedQuantities.value[item._id] = item.quantity;
@@ -22,7 +25,7 @@ const fetchInventory = async () => {
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/products");
+    const response = await axios.get(API_BASE_URL+"/products");
     products.value = response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -32,7 +35,7 @@ const fetchProducts = async () => {
 const updateQuantity = async (id) => {
   try {
     const quantity = updatedQuantities.value[id];
-    await axios.patch(`http://localhost:8080/api/inventory/${id}`, { quantity });
+    await axios.patch(API_BASE_URL+`/inventory/${id}`, { quantity });
     fetchInventory();
   } catch (error) {
     console.error("Error updating quantity:", error);
@@ -45,7 +48,7 @@ const addInventoryEntry = async () => {
     return;
   }
   try {
-    await axios.post("http://localhost:5000/api/inventory", {
+    await axios.post(API_BASE_URL+"/inventory", {
       productId: newProductId.value,
       quantity: newProductQuantity.value
     });

@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import config from "@/config.js"; 
+
+const API_BASE_URL = config.API_BASE_URL;
 
 const cart = ref([]);
 const customer = ref({ name: "", email: "" });
@@ -45,7 +48,7 @@ const checkout = async () => {
     products: cart.value.map((item) => ({ productId: item.productId, quantity: item.quantity })),
   };
   try {
-    await axios.post("http://localhost:5000/api/orders", order);
+    await axios.post(API_BASE_URL+"/orders", order);
     alert("Order placed successfully!");
     cart.value = [];
     saveCart();

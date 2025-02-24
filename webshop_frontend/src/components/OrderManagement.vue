@@ -1,12 +1,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import config from "@/config.js"; 
+
+const API_BASE_URL = config.API_BASE_URL;
 
 const orders = ref([]);
 
 const fetchOrders = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/orders");
+    const response = await axios.get(API_BASE_URL+"/orders");
     orders.value = response.data;
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -15,7 +18,7 @@ const fetchOrders = async () => {
 
 const updateOrderStatus = async (orderId, newStatus) => {
   try {
-    await axios.patch(`http://localhost:8080/api/orders/${orderId}`, { status: newStatus });
+    await axios.patch(API_BASE_URL+`/orders/${orderId}`, { status: newStatus });
     alert("Order status updated successfully!");
     fetchOrders();
   } catch (error) {
