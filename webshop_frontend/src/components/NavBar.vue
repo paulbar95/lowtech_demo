@@ -54,13 +54,6 @@ onMounted(() => {
     <div class="navbar-container">
       <div class="logo" @click="navigateTo('/')">Product Catalog</div>
 
-      <div class="nav-extras">
-        <input v-model="searchQuery" type="text" placeholder="Search Products..." @keyup.enter="navigateToSearch" />
-        <button class="menu-toggle" @click="toggleMenu">
-          <span class="hamburger"></span>
-        </button>
-      </div>
-
       <ul :class="['nav-links', { active: isMenuOpen }]">
         <li :class="{ active: route.path === '/' }" @click="navigateTo('/')">
           <i class="fas fa-home"></i> Home

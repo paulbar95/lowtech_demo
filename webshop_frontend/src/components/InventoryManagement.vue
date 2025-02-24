@@ -13,7 +13,7 @@ const fetchInventory = async () => {
     const response = await axios.get("http://localhost:8080/api/inventory");
     inventory.value = response.data;
     inventory.value.forEach(item => {
-      updatedQuantities.value[item._id] = item.quantity;
+      updatedQuantities.value[item.id] = item.quantity;
     });
   } catch (error) {
     console.error("Error fetching inventory:", error);
@@ -30,9 +30,10 @@ const fetchProducts = async () => {
 };
 
 const updateQuantity = async (id) => {
+  console.log("MY ID:", id);
   try {
     const quantity = updatedQuantities.value[id];
-    await axios.patch(`http://localhost:8080/api/inventory/${id}`, { quantity });
+    await axios.put(`http://localhost:8080/api/inventory/${id}?quantity=${quantity}`);
     fetchInventory();
   } catch (error) {
     console.error("Error updating quantity:", error);
@@ -40,15 +41,18 @@ const updateQuantity = async (id) => {
 };
 
 const addInventoryEntry = async () => {
+  console.log("Add ID, before:", newProductId.value, "Quantity:", newProductQuantity.value);
   if (!newProductId.value || newProductQuantity.value <= 0) {
     alert("Please select a product and enter a valid quantity.");
     return;
   }
   try {
-    await axios.post("http://localhost:5000/api/inventory", {
-      productId: newProductId.value,
-      quantity: newProductQuantity.value
-    });
+    await axios.post("http://localhost:8080/api/inventory",
+        new URLSearchParams({
+          productId: newProductId.value,
+          quantity: newProductQuantity.value
+        })
+    );
     newProductId.value = "";
     newProductQuantity.value = 0;
     fetchInventory();
@@ -71,7 +75,7 @@ onMounted(() => {
     <div class="add-item-form">
       <select v-model="newProductId">
         <option value="">Select a Product</option>
-        <option v-for="product in products" :key="product._id" :value="product._id">
+        <option v-for="product in products" :key="product.id" :value="product.id">
           {{ product.name }}
         </option>
       </select>
@@ -81,15 +85,15 @@ onMounted(() => {
 
     <!-- Inventory List -->
     <div class="inventory-list">
-      <div v-for="item in inventory" :key="item._id" class="inventory-item">
+      <div v-for="item in inventory" :key="item.id" class="inventory-item">
         <h3>{{ item.product.name }}</h3>
         <p>Category: {{ item.product.category }}</p>
         <p>Description: {{ item.product.description }}</p>
         <p>Price: ${{ item.product.price }}</p>
         <p>Stock: {{ item.quantity }}</p>
         <div class="button-group">
-          <input v-model.number="updatedQuantities[item._id]" type="number" min="0" />
-          <button class="button-secondary" @click="updateQuantity(item._id)">Update Quantity</button>
+          <input v-model.number="updatedQuantities[item.id]" type="number" min="0" />
+          <button class="button-secondary" @click="updateQuantity(item.id)">Update Quantity</button>
         </div>
       </div>
     </div>
