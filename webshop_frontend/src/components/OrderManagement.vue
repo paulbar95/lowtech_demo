@@ -15,9 +15,7 @@ const fetchOrders = async () => {
 
 const updateOrderStatus = async (orderId, newStatus) => {
   try {
-    await axios.put(
-        `http://localhost:8080/api/orders/${orderId}/status?status=${newStatus}`
-    );
+    await axios.patch(`http://localhost:8080/api/orders/${orderId}`, { status: newStatus });
     alert("Order status updated successfully!");
     fetchOrders();
   } catch (error) {

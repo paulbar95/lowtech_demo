@@ -78,7 +78,7 @@ export default {
       cart: [],
       customerName: "",
       customerEmail: "",
-      paymentMethod: "", // Hier wird der ausgewählte Wert (z.B. "PAYPAL") gespeichert
+      paymentMethod: "",
       showLogin: false,
       loginUsername: "",
       loginPassword: "",
@@ -144,13 +144,13 @@ export default {
       const order = {
         customerName: this.customerName,
         customerEmail: this.customerEmail,
-        paymentMethod: this.paymentMethod, // Dieser Wert wird an das Backend übergeben
+        paymentMethod: this.paymentMethod,
         products: this.cart.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
         })),
       };
-      console.log("order:", order.products[0])
+      console.log("order:", order.products[0]);
 
       try {
         await axios.post("http://localhost:8080/api/orders", order);
@@ -166,24 +166,24 @@ export default {
         alert("Failed to place the order.");
       }
     },
+    // Diese Methode kann jetzt auch von anderen Komponenten (z. B. im Produktkatalog) verwendet werden:
+    addProductToCart(product) {
+      const existingItem = this.cart.find(
+          (item) => item.productId === product._id
+      );
+      if (existingItem) {
+        existingItem.quantity++;
+      } else {
+        this.cart.push({ productId: product._id, product, quantity: 1 });
+      }
+      this.saveCart();
+      alert("Product added to cart!");
+    },
   },
   created() {
     this.loadCart();
   },
 };
-
-const addProductToCart = (product) => {
-  const existingItem = cart.value.find((item) => item.productId === product._id);
-  if (existingItem) {
-    existingItem.quantity++;
-  } else {
-    cart.value.push({ productId: product._id, product, quantity: 1 });
-  }
-  saveCart();
-  alert("Product added to cart!");
-};
-
-// onMounted(this.loadCart);
 </script>
 
 <style scoped>
