@@ -1,5 +1,5 @@
-INSERT INTO products
-("id", "created_at", "name", "description", "price", "category", "image_url")
+INSERT INTO product
+("id", "created_on", "name", "description", "price", "category", "image_url")
 VALUES
     (
         1,
@@ -93,7 +93,7 @@ VALUES
     )
 ON CONFLICT ("id") DO UPDATE
 SET
-    "created_at" = EXCLUDED."created_at",
+    "created_on" = EXCLUDED."created_on",
     "name" = EXCLUDED."name",
     "description" = EXCLUDED."description",
     "price" = EXCLUDED."price",
