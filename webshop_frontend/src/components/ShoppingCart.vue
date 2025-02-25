@@ -6,7 +6,11 @@
     </div>
     <div v-else>
       <!-- Anzeige der Produkte im Warenkorb -->
-      <div v-for="item in cart" :key="item.productId" class="cart-item">
+      <div
+          v-for="item in cart"
+          :key="item.productId"
+          class="cart-item"
+      >
         <h2>{{ item.product.name }}</h2>
         <p>Price: {{ (item.product.price / 100).toFixed(2) }}€</p>
         <p>Category: {{ item.product.category }}</p>
@@ -19,49 +23,169 @@
         <button @click="removeFromCart(item.productId)">Remove</button>
       </div>
 
-      <!-- Checkout-Bereich -->
-      <div class="checkout">
-        <h2>Total Price: {{ (total / 100).toFixed(2) }}€</h2>
-        <div class="customer-info">
-          <input
-              type="text"
-              v-model="customerName"
-              placeholder="Enter your name"
-          />
-          <input
-              type="email"
-              v-model="customerEmail"
-              placeholder="Enter your email"
-          />
-        </div>
-        <!-- Auswahl der Zahlungsmethode -->
-        <div class="payment-method">
-          <h3>Select Payment Method</h3>
-          <label>
-            <input type="radio" value="PAYPAL" v-model="paymentMethod" />
-            PayPal
-          </label>
-          <label>
-            <input type="radio" value="KLARNA" v-model="paymentMethod" />
-            Klarna
-          </label>
-          <label>
-            <input type="radio" value="CREDITCARD" v-model="paymentMethod" />
-            Credit Card
-          </label>
-        </div>
-        <button @click="checkout">Checkout</button>
+      <!-- Kundendaten auf der Hauptseite -->
+      <div class="customer-info-main">
+        <input
+            type="text"
+            v-model="customerName"
+            placeholder="Enter your name"
+        />
+        <input
+            type="email"
+            v-model="customerEmail"
+            placeholder="Enter your email"
+        />
       </div>
+
+      <!-- Auswahl der Zahlungsmethode auf der Hauptseite -->
+      <div class="payment-selection">
+        <h3>Select Payment Method</h3>
+        <label>
+          <input type="radio" value="PAYPAL" v-model="paymentMethod" />
+          PayPal
+        </label>
+        <label>
+          <input type="radio" value="KLARNA" v-model="paymentMethod" />
+          Klarna
+        </label>
+        <label>
+          <input type="radio" value="CREDITCARD" v-model="paymentMethod" />
+          Credit Card
+        </label>
+      </div>
+
+      <!-- Checkout-Button -->
+      <button class="trigger-checkout" @click="openCheckoutModal">
+        Checkout
+      </button>
     </div>
 
-    <!-- Login Popup Modal (simuliert den Login, bevor die Bestellung abgeschickt wird) -->
-    <div v-if="showLogin" class="modal-overlay">
-      <div class="modal">
-        <h2>Login</h2>
-        <p>Please login to confirm your order</p>
-        <input type="text" v-model="loginUsername" placeholder="Username" />
-        <input type="password" v-model="loginPassword" placeholder="Password" />
-        <button @click="performLogin">Login</button>
+    <!-- Checkout-Popup Modal -->
+    <div v-if="showCheckoutModal" class="modal-overlay">
+      <div class="modal checkout-modal">
+
+        <!-- Gemeinsamer Titel und Gesamtbetrag -->
+        <h2>Total Price: {{ (total / 100).toFixed(2) }}€</h2>
+
+        <!-- PayPal-Block: ähnliches Layout wie bei PayPal -->
+        <div v-if="paymentMethod === 'PAYPAL'" class="paypal-login">
+          <!-- PayPal-Logo (Platzhalter-Link) -->
+          <img
+              class="paypal-logo"
+              src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+              alt="PayPal Logo"
+          />
+          <h3 class="paypal-header">Pay with PayPal</h3>
+          <p class="paypal-subtext">Enter your PayPal email and password</p>
+
+          <input
+              type="email"
+              v-model="paypalEmail"
+              placeholder="Email or mobile number"
+          />
+          <input
+              type="password"
+              v-model="paypalPassword"
+              placeholder="Password"
+          />
+
+          <a class="forgot-link" href="#">
+            Forgot password?
+          </a>
+
+          <button class="paypal-login-button" @click="confirmCheckout">
+            Log In
+          </button>
+
+          <div class="or-separator">
+            <span>or</span>
+          </div>
+
+          <button class="paypal-create-account-button">
+            Create an account
+          </button>
+        </div>
+
+        <!-- Klarna-Block -->
+        <div
+            v-else-if="paymentMethod === 'KLARNA'"
+            class="klarna-container"
+        >
+          <!-- Titel und Untertitel wie im Screenshot -->
+          <h2 class="klarna-bank-title">
+            LowTech GmbH
+          </h2>
+          <p class="klarna-subheading">
+            Sign in with your online banking details.
+          </p>
+
+          <!-- Login & Passwort Felder -->
+          <div class="klarna-login-fields">
+            <label for="klarnaLogin">Login</label>
+            <input
+                id="klarnaLogin"
+                type="text"
+                v-model="klarnaUsername"
+                placeholder="Login"
+            />
+
+            <label for="klarnaPassword">Passwort</label>
+            <input
+                id="klarnaPassword"
+                type="password"
+                v-model="klarnaPassword"
+                placeholder="Passwort"
+            />
+          </div>
+
+          <!-- Hinweistexte analog zum Screenshot -->
+          <p class="klarna-note">
+            Enter your banking PIN, not the PIN of your debit/credit card.
+          </p>
+          <p class="klarna-note">
+            After entering your login details, we check whether your account covers the amount
+            to be transferred (verification of sufficient funds) and whether any transactions
+            with Sofort you issued from your account in the last 30 days are currently open.
+          </p>
+          <a href="#" class="klarna-privacy">
+            Our Privacy policy applies
+          </a>
+
+          <!-- "Next"-Button -->
+          <button class="klarna-next-button" @click="confirmCheckout">
+            Next
+          </button>
+        </div>
+
+        <!-- Credit-Card-Block -->
+        <div v-else-if="paymentMethod === 'CREDITCARD'">
+          <p>You have selected <strong>Credit Card</strong>.</p>
+          <div class="creditcard-info">
+            <input
+                type="text"
+                v-model="cardNumber"
+                placeholder="Card Number"
+            />
+            <input
+                type="text"
+                v-model="cardExpiry"
+                placeholder="Expiry Date (MM/YY)"
+            />
+            <input
+                type="text"
+                v-model="cardCVV"
+                placeholder="CVV"
+            />
+          </div>
+          <button class="checkout-button" @click="confirmCheckout">
+            Pay with Credit Card
+          </button>
+        </div>
+
+        <!-- Cancel-Button (schließt das Modal) -->
+        <button class="cancel-button" @click="cancelCheckout">
+          Cancel
+        </button>
       </div>
     </div>
   </div>
@@ -69,7 +193,6 @@
 
 <script>
 import axios from "axios";
-import { ref, onMounted } from "vue";
 
 export default {
   name: "ShoppingCart",
@@ -79,9 +202,20 @@ export default {
       customerName: "",
       customerEmail: "",
       paymentMethod: "",
-      showLogin: false,
-      loginUsername: "",
-      loginPassword: "",
+      showCheckoutModal: false,
+
+      // PayPal-Felder
+      paypalEmail: "",
+      paypalPassword: "",
+
+      // Klarna-Felder
+      klarnaUsername: "",
+      klarnaPassword: "",
+
+      // Kreditkarten-Felder
+      cardNumber: "",
+      cardExpiry: "",
+      cardCVV: "",
     };
   },
   computed: {
@@ -118,29 +252,48 @@ export default {
       this.cart = this.cart.filter((item) => item.productId !== productId);
       this.saveCart();
     },
-    checkout() {
+    openCheckoutModal() {
       if (this.cart.length === 0) {
         alert("Your cart is empty!");
-        return;
-      }
-      if (!this.customerName || !this.customerEmail) {
-        alert("Please enter your name and email address.");
         return;
       }
       if (!this.paymentMethod) {
         alert("Please select a payment method.");
         return;
       }
-      // Zeige das Login-Popup an
-      this.showLogin = true;
+      if (!this.customerName || !this.customerEmail) {
+        alert("Please enter your name and email address.");
+        return;
+      }
+      // Öffnet das Modal mit dem jeweiligen Zahlungs-Block
+      this.showCheckoutModal = true;
     },
-    performLogin() {
-      // Simuliere einen erfolgreichen Login (Eingaben werden ignoriert)
-      this.showLogin = false;
+    cancelCheckout() {
+      this.showCheckoutModal = false;
+    },
+    confirmCheckout() {
+      // Zusätzliche Validierung pro Zahlungsmethode
+      if (this.paymentMethod === "PAYPAL") {
+        if (!this.paypalEmail || !this.paypalPassword) {
+          alert("Please enter your PayPal email and password.");
+          return;
+        }
+      } else if (this.paymentMethod === "KLARNA") {
+        if (!this.klarnaUsername || !this.klarnaPassword) {
+          alert("Please enter your Klarna login details.");
+          return;
+        }
+      } else if (this.paymentMethod === "CREDITCARD") {
+        if (!this.cardNumber || !this.cardExpiry || !this.cardCVV) {
+          alert("Please enter your credit card details.");
+          return;
+        }
+      }
+
       this.submitOrder();
+      this.showCheckoutModal = false;
     },
     async submitOrder() {
-      // Erstelle das Order-Objekt inklusive des Zahlungsmethoden-Werts
       const order = {
         customerName: this.customerName,
         customerEmail: this.customerEmail,
@@ -150,23 +303,41 @@ export default {
           quantity: item.quantity,
         })),
       };
-      console.log("order:", order.products[0]);
+
+      // Anhängen zusätzlicher Daten je nach Zahlungsmethode
+      if (this.paymentMethod === "PAYPAL") {
+        order.paypalEmail = this.paypalEmail;
+        order.paypalPassword = this.paypalPassword;
+      } else if (this.paymentMethod === "KLARNA") {
+        order.klarnaUsername = this.klarnaUsername;
+        order.klarnaPassword = this.klarnaPassword;
+      } else if (this.paymentMethod === "CREDITCARD") {
+        order.cardNumber = this.cardNumber;
+        order.cardExpiry = this.cardExpiry;
+        order.cardCVV = this.cardCVV;
+      }
 
       try {
         await axios.post("http://localhost:8080/api/orders", order);
         alert("Order placed successfully!");
-        // Leere den Warenkorb und die Eingabefelder
+        // Alles zurücksetzen
         this.cart = [];
         this.saveCart();
         this.customerName = "";
         this.customerEmail = "";
         this.paymentMethod = "";
+        this.paypalEmail = "";
+        this.paypalPassword = "";
+        this.klarnaUsername = "";
+        this.klarnaPassword = "";
+        this.cardNumber = "";
+        this.cardExpiry = "";
+        this.cardCVV = "";
       } catch (error) {
         console.error("Error during checkout:", error);
         alert("Failed to place the order.");
       }
     },
-    // Diese Methode kann jetzt auch von anderen Komponenten (z. B. im Produktkatalog) verwendet werden:
     addProductToCart(product) {
       const existingItem = this.cart.find(
           (item) => item.productId === product._id
@@ -187,51 +358,62 @@ export default {
 </script>
 
 <style scoped>
-.cart-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
+/* Warenkorb-Items */
 .cart-item {
   background: var(--background-light);
   padding: 20px;
   border-radius: var(--border-radius);
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-}
-
-.cart-item:hover {
-  transform: scale(1.05);
-}
-
-.button-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.checkout-section {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.customer-info input {
-  margin-bottom: 10px;
-  padding: 8px;
-  font-size: 16px;
-}
-.payment-method {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  transition: box-shadow 0.3s ease;
 }
-.payment-method label {
+.cart-item:hover {
+  /* Dezentere Hover-Wirkung */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Kundendaten auf der Hauptseite */
+.customer-info-main {
+  text-align: center;
+  margin: 20px 0;
+}
+.customer-info-main input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 5px;
+  width: 80%;
+  max-width: 300px;
+}
+
+/* Zahlungsmethoden-Auswahl */
+.payment-selection {
+  text-align: center;
+  margin: 20px 0;
+}
+.payment-selection label {
   margin-right: 15px;
   font-weight: bold;
 }
 
-/* Modal styles for login popup */
+/* Checkout-Button auf Hauptseite */
+.trigger-checkout {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 20px auto;
+}
+.trigger-checkout:hover {
+  background-color: #218838;
+}
+
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -243,21 +425,209 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.modal {
-  background: white;
+.modal.checkout-modal {
+  background-color: #fff;
   padding: 20px;
-  border-radius: 5px;
-  width: 300px;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
-.modal input {
-  width: 90%;
-  padding: 8px;
-  margin-bottom: 10px;
-  font-size: 16px;
+.modal.checkout-modal h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
-.modal button {
-  padding: 8px 16px;
+
+/* PayPal-Look */
+.paypal-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.paypal-logo {
+  width: 100px;
+  margin-bottom: 10px;
+}
+.paypal-header {
+  font-size: 20px;
+  margin: 10px 0;
+}
+.paypal-subtext {
+  color: #666;
+  margin-bottom: 20px;
+}
+.paypal-login input {
+  padding: 10px;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 350px;
+}
+.forgot-link {
+  align-self: flex-start;
+  margin-bottom: 20px;
+  color: #0070ba;
+  text-decoration: none;
+  font-size: 14px;
+}
+.forgot-link:hover {
+  text-decoration: underline;
+}
+.paypal-login-button {
+  background-color: #0070ba;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 350px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+}
+.paypal-login-button:hover {
+  background-color: #005c9c;
+}
+.or-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+.or-separator span {
+  background: #fff;
+  padding: 0 10px;
+  color: #999;
+}
+.paypal-create-account-button {
+  background-color: #fff;
+  border: 1px solid #0070ba;
+  color: #0070ba;
+  padding: 12px;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 350px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.paypal-create-account-button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Klarna-Login und Credit-Card-Felder */
+.klarna-container {
+  text-align: left;
+}
+.klarna-bank-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  text-transform: uppercase;
+}
+.klarna-subheading {
+  font-size: 1rem;
+  margin-bottom: 1.2em;
+  color: #333;
+}
+.klarna-login-fields {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+.klarna-login-fields label {
+  margin-bottom: 0.3em;
+  font-weight: bold;
+}
+.klarna-login-fields input {
+  margin-bottom: 0.8em;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.klarna-note {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+}
+.klarna-privacy {
+  display: inline-block;
+  margin-bottom: 1em;
+  font-size: 0.9rem;
+  color: #0070ba;
+  text-decoration: none;
+}
+.klarna-privacy:hover {
+  text-decoration: underline;
+}
+.klarna-next-button {
+  background-color: #da356f;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 1em;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 350px;
+  margin-left: 1.59rem;
+
+}
+.klarna-next-button:hover {
+  background-color: #bb3e6a;
+}
+
+.creditcard-info input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+/* Gemeinsame Checkout-/Cancel-Buttons (für Klarna & CC) */
+.checkout-button {
+  background-color: #ffc439;
+  border: none;
+  color: #111;
+  padding: 12px;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 350px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+}
+.checkout-button:hover {
+  background-color: #ffb347;
+}
+.cancel-button {
+  background-color: #ccc;
+  border: none;
+  color: #111;
+  padding: 10px;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 350px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.cancel-button:hover {
+  background-color: #bbb;
 }
 </style>

@@ -18,10 +18,15 @@ const updateOrderStatus = async (orderId, newStatus) => {
     await axios.put(
         `http://localhost:8080/api/orders/${orderId}/status?status=${newStatus}`
     );
-    alert("Order status updated successfully!");
-    fetchOrders();
+    // Finde die Bestellung im orders Array und aktualisiere den Status
+    const orderToUpdate = orders.value.find(order => order.id === orderId);
+    if (orderToUpdate) {
+      orderToUpdate.status = newStatus;
+    }
+    // Es wird keine Benachrichtigung mehr angezeigt.
   } catch (error) {
     console.error("Error updating order status:", error);
+    // Optional kannst du hier einen Fehlerhinweis einbauen.
   }
 };
 
@@ -35,9 +40,10 @@ onMounted(fetchOrders);
       <p>No orders available.</p>
     </div>
     <div v-for="order in orders" :key="order.id" class="order-card">
-      <h2>Order #{{ order.id }}</h2>
-      <p>Customer: {{ order.customerName }} ({{ order.customerEmail }})</p>
-      <p>Payment Method: {{ order.paymentMethod}}</p>
+      <h2>Order ID #{{ order.id }}</h2>
+      <p>Customer Name: {{ order.customerName }}</p>
+      <p>Customer E-mail: {{order.customerEmail}}</p>
+      <p>Payment Method: {{ order.paymentMethod }}</p>
       <p>Status: {{ order.status }}</p>
       <ul>
         <li v-for="item in order.products" :key="item.id">
