@@ -31,7 +31,7 @@ const submitForm = async () => {
 const productImageBucketUrl = ref("");
 const fetchProductInfo = async () => {
   try {
-    const imageUrl = await axios.get("http://localhost:8080/api/products/imageBucketUrl");
+    const imageUrl = await axios.get(API_BASE_URL + "/products/imageBucketUrl");
     productImageBucketUrl.value = imageUrl.data;
   } catch (error) {
     console.error("Error fetching product info:", error);
