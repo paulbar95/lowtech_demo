@@ -1,0 +1,26 @@
+# Ignore Gradle build output
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar  # Keep Gradle wrapper
+
+# Ignore IDE and OS-specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+
+# Ignore Git repo files
+.git/
+.gitignore
+
+# Ignore logs, temp files, and caches
+logs/
+tmp/
+*.log
+*.tmp
+
+# Ignore test reports
+test-results/
+out/

@@ -1,12 +1,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import config from "@/config.js";
+
+const API_BASE_URL = config.API_BASE_URL;
 
 const orders = ref([]);
 
 const fetchOrders = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/orders");
+    const response = await axios.get(API_BASE_URL+"/orders");
     orders.value = response.data;
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -16,7 +19,7 @@ const fetchOrders = async () => {
 const updateOrderStatus = async (orderId, newStatus) => {
   try {
     await axios.put(
-        `http://localhost:8080/api/orders/${orderId}/status?status=${newStatus}`
+        API_BASE_URL+`/orders/${orderId}/status?status=${newStatus}`
     );
     // Finde die Bestellung im orders Array und aktualisiere den Status
     const orderToUpdate = orders.value.find(order => order.id === orderId);

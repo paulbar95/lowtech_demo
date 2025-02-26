@@ -1,6 +1,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import axios from "axios";
+import config from "@/config.js"; 
+
+const API_BASE_URL = config.API_BASE_URL;
 
 const product = ref({
   name: "",
@@ -16,7 +19,7 @@ const submitForm = async () => {
     return;
   }
   try {
-    await axios.post("http://localhost:8080/api/products", product.value);
+    await axios.post(API_BASE_URL+"/products", product.value);
     alert("Product added successfully!");
     resetForm();
   } catch (error) {

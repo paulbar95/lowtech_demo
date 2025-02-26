@@ -1,0 +1,51 @@
+services:
+  postgres:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: db_lowtech
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+
+  backend:
+    build:
+      context: ./webshop
+      dockerfile: Dockerfile
+    container_name: webshop_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy  # Wait until PostgreSQL is ready
+    environment:
+      SPRING_CONFIG_LOCATION: classpath:/application-docker.properties
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./webshop_frontend
+      dockerfile: Dockerfile
+      args: 
+        API_BASE_URL: ${API_BASE_URL}
+    container_name: webshop_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:

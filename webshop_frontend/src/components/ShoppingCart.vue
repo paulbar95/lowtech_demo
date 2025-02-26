@@ -201,6 +201,10 @@
 
 <script>
 import axios from "axios";
+import { ref, onMounted } from "vue";
+import config from "@/config.js";
+
+const API_BASE_URL = config.API_BASE_URL;
 
 export default {
   name: "ShoppingCart",
@@ -325,7 +329,7 @@ export default {
       }
 
       try {
-        await axios.post("http://localhost:8080/api/orders", order);
+        await axios.post(API_BASE_URL+"/orders", order);
         alert("Order placed successfully!");
         // Alles zurücksetzen
         this.cart = [];

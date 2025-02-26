@@ -2,6 +2,9 @@
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { formatter } from "./PriceFormatter.js"
+import config from "@/config.js"; 
+
+const API_BASE_URL = config.API_BASE_URL;
 
 const products = ref([]);
 const productImageUrl = ref("");
@@ -10,8 +13,8 @@ const selectedCategory = ref("");
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/products");
-    const imageUrl = await axios.get("http://localhost:8080/api/products/imageUrl");
+    const response = await axios.get(API_BASE_URL+"/products");
+    const imageUrl = await axios.get(API_BASE_URL+"/products/imageUrl");
     products.value = response.data;
     productImageUrl.value = imageUrl.data;
   } catch (error) {
