@@ -66,7 +66,7 @@ const resetForm = () => {
       </div>
 
       <div class="form-group">
-        <label for="price">Price</label>
+        <label for="price">Price (Cents)</label>
         <input v-model.number="product.price" type="number" id="price" placeholder="Enter price" min="0" step="0.01" required />
       </div>
 
@@ -78,7 +78,7 @@ const resetForm = () => {
       <div class="form-group">
         <label for="imageUrl">Image</label>
         <div>
-          <input v-model="product.imageUrl" type="url" id="imageUrl" placeholder="Enter image" />
+          <input v-model="product.imageUrl" type="text" id="imageUrl" placeholder="Enter image" />
           <a :href="productImageBucketUrl" target="_blank">AWS Image Bucket</a>
         </div>
       </div>

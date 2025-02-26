@@ -60,7 +60,7 @@ public class OrderService {
             }
 
             // Check inventory
-            Inventory inventory = inventoryRepository.findById(product.getId())
+            var inventory = inventoryRepository.findByProductId(product.getId()).stream().findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("No inventory found for product: " + product.getName()));
 
             if (inventory.getQuantity() < productDTO.getQuantity()) {
