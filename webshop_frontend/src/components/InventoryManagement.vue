@@ -37,7 +37,6 @@ const updateQuantity = async (id) => {
   console.log("MY ID:", id);
   try {
     const quantity = updatedQuantities.value[id];
-    //await axios.patch(API_BASE_URL+`/inventory/${id}`, { quantity });
     await axios.put(API_BASE_URL+`/inventory/${id}?quantity=${quantity}`);
     fetchInventory();
   } catch (error) {
@@ -109,17 +108,16 @@ onMounted(() => {
 h1, h2, h3 {
   margin-top: 0;
 }
-.inventory-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-}
 
 .inventory-item {
   background: var(--background-white);
   padding: 15px;
   border-radius: var(--border-radius);
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-item:not(:last-child) {
+  margin-bottom: 20px;
 }
 
 .button-group {

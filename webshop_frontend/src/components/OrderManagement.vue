@@ -37,13 +37,13 @@ onMounted(fetchOrders);
 </script>
 
 <template>
-  <div>
-    <h1>Order Management</h1>
+  <div class="container-box">
+    <h2>Order Management</h2>
     <div v-if="orders.length === 0">
       <p>No orders available.</p>
     </div>
     <div v-for="order in orders" :key="order.id" class="order-card">
-      <h2>Order #{{ order.id }}</h2>
+      <h3>Order #{{ order.id }}</h3>
       <p>Customer Name: {{ order.customerName }}</p>
       <p>Customer E-mail: {{order.customerEmail}}</p>
       <p>Payment Method: {{ order.paymentMethod }}</p>
@@ -63,7 +63,7 @@ onMounted(fetchOrders);
 </template>
 
 <style scoped>
-h2, h1 {
+h2, h1, h3 {
   margin-top: 0;
 }
 

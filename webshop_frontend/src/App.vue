@@ -18,8 +18,8 @@ import NavBar from "./components/NavBar.vue";
 
 /* 🔹 Global Styles for Full Responsiveness */
 :root {
-  --primary-color: #9870af;
-  --primary-dark: #6e5175;
+  --primary-color: #92759c;
+  --primary-dark: #6e5875;
   --secondary-color: #007bff;
   --secondary-dark: #0056b3;
   --background-light: #f3ddff;

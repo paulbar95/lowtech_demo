@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Shopping Cart</h1>
+  <div class="container-box">
+    <h2>Shopping Cart</h2>
     <div v-if="cart.length === 0">
       <p>Your cart is empty. Add some products from the catalog!</p>
     </div>
@@ -13,7 +13,7 @@
       >
         <div class="cart-item-content">
           <div>
-            <h2>{{ item.product.name }}</h2>
+            <h3>{{ item.product.name }}</h3>
             <p>Price: {{ (item.product.price / 100).toFixed(2) }}€</p>
             <p>Category: {{ item.product.category }}</p>
           </div>
@@ -369,7 +369,7 @@ export default {
 </script>
 
 <style scoped>
-h2, h1 {
+h2, h1, h3 {
   margin-top: 0;
 }
 /* Warenkorb-Items */
