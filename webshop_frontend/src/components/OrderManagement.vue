@@ -40,7 +40,7 @@ onMounted(fetchOrders);
       <p>No orders available.</p>
     </div>
     <div v-for="order in orders" :key="order.id" class="order-card">
-      <h2>Order ID #{{ order.id }}</h2>
+      <h2>Order #{{ order.id }}</h2>
       <p>Customer Name: {{ order.customerName }}</p>
       <p>Customer E-mail: {{order.customerEmail}}</p>
       <p>Payment Method: {{ order.paymentMethod }}</p>
@@ -60,26 +60,26 @@ onMounted(fetchOrders);
 </template>
 
 <style scoped>
-.order-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+h2, h1 {
+  margin-top: 0;
 }
 
 .order-card {
-  background: var(--background-light);
+  background: var(--background-white);
   padding: 20px;
   border-radius: var(--border-radius);
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+.order-card:not(:last-child) {
+  margin-bottom: 20px;
 }
 
 .order-card h3 {
   margin-bottom: 10px;
 }
 
-.button-group {
+.status-controls {
   display: flex;
   gap: 10px;
-  margin-top: 15px;
 }
 </style>

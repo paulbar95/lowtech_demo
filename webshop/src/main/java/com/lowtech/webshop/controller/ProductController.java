@@ -28,6 +28,11 @@ public class ProductController {
         return productService.getImageUrl();
     }
 
+    @GetMapping("/imageBucketUrl")
+    public String getProductImageBucketUrl() {
+        return productService.getImageBucketUrl();
+    }
+
     @GetMapping
     public List<Product> getAllProducts() {
         return productService.findAll();

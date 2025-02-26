@@ -14,15 +14,18 @@ import NavBar from "./components/NavBar.vue";
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&display=swap');
+
 /* 🔹 Global Styles for Full Responsiveness */
 :root {
-  --primary-color: #2c3e50;
-  --primary-dark: #1a252f;
+  --primary-color: #9870af;
+  --primary-dark: #6e5175;
   --secondary-color: #007bff;
   --secondary-dark: #0056b3;
-  --background-light: #f8f9fa;
+  --background-light: #f3ddff;
   --background-white: #ffffff;
-  --text-color: #333;
+  --background-body: #f8f3ff;
+  --text-color: #49444a;
   --border-radius: 5px;
 }
 
@@ -48,7 +51,6 @@ header {
   justify-content: center;
   align-items: center;
   background-color: var(--background-white);
-  padding: 1rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -56,7 +58,7 @@ header {
 main {
   flex: 1;
   padding: 20px;
-  background-color: var(--background-white);
+  background-color: var(--background-body);
 }
 
 /* 🔹 Mobile Layout */
@@ -89,23 +91,17 @@ button {
   background: var(--primary-dark);
 }
 
-/* Secondary Button */
-.button-secondary {
-  background: var(--secondary-color);
-  color: white;
-}
-
-.button-secondary:hover {
-  background: var(--secondary-dark);
-}
-
 /* 🔹 Input Fields */
-input {
+input, select {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: var(--border-radius);
   width: 100%;
   max-width: 200px;
+}
+
+select option:first-child {
+  color: red;
 }
 
 /* 🔹 Container Box */
@@ -115,6 +111,6 @@ input {
   padding: 20px;
   background: var(--background-white);
   border-radius: 10px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 </style>

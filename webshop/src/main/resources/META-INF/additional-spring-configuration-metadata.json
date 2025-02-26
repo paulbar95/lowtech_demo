@@ -1,9 +1,14 @@
 {
   "properties": [
     {
-      "name": "env.imageS3url",
+      "name": "env.imageUrl",
       "type": "java.lang.String",
       "description": "Base url for all images contained in a static S3 bucket."
+    },
+    {
+      "name": "env.imageBucketUrl",
+      "type": "java.lang.String",
+      "description": "S3 bucket in AWS."
     }
   ]
 }

@@ -67,6 +67,10 @@ public class ProductService {
     public String getImageUrl() {
         return config.getImageUrl();
     }
+
+    public String getImageBucketUrl() {
+        return config.getImageBucketUrl();
+    }
 }
 
 @Getter
@@ -76,4 +80,5 @@ public class ProductService {
 @ConfigurationProperties(prefix = "env")
 class ProductServiceConfig {
     private String imageUrl;
+    private String imageBucketUrl;
 }
