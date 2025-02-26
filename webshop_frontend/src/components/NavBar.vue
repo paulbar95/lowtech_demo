@@ -6,26 +6,15 @@ const isMenuOpen = ref(false);
 const isDropdownOpen = ref(false);
 const router = useRouter();
 const route = useRoute();
-const searchQuery = ref("");
-
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
-};
 
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
 const navigateTo = (path) => {
+  if(isDropdownOpen.value) toggleDropdown();
   router.push(path);
   if (window.innerWidth <= 768) {
-    isMenuOpen.value = false;
-  }
-};
-
-const navigateToSearch = () => {
-  if (searchQuery.value.trim()) {
-    router.push(`/search?q=${searchQuery.value.trim()}`);
     isMenuOpen.value = false;
   }
 };
@@ -34,10 +23,6 @@ const cartItemCount = computed(() => {
   const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
   return cart.reduce((sum, item) => sum + item.quantity, 0);
 });
-
-const toggleDarkMode = () => {
-  document.body.classList.toggle('dark-mode');
-};
 
 onMounted(() => {
   window.addEventListener("resize", () => {
@@ -52,12 +37,9 @@ onMounted(() => {
 <template>
   <nav class="navbar">
     <div class="navbar-container">
-      <div class="logo" @click="navigateTo('/')">Product Catalog</div>
+      <div class="logo" @click="navigateTo('/')">LowTech</div>
 
       <ul :class="['nav-links', { active: isMenuOpen }]">
-        <li :class="{ active: route.path === '/' }" @click="navigateTo('/')">
-          <i class="fas fa-home"></i> Home
-        </li>
 
         <li class="dropdown">
           <span @click="toggleDropdown">
@@ -76,9 +58,6 @@ onMounted(() => {
           <i class="fas fa-shopping-cart"></i> Cart
           <span v-if="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
         </li>
-        <li @click="toggleDarkMode">
-          <i class="fas fa-moon"></i> Dark Mode
-        </li>
         <li :class="{ active: route.path === '/login' }" @click="navigateTo('/login')">
           <i class="fas fa-sign-in-alt"></i> Login
         </li>
@@ -89,9 +68,9 @@ onMounted(() => {
 
 <style scoped>
 .navbar {
-  background-color: #333;
-  color: white;
-  padding: 1rem 0;
+  background-color: var(--primary-dark);
+  color: var(--background-light);
+  padding: 1px 0;
   position: sticky;
   width: 100%;
   top: 0;
@@ -110,54 +89,12 @@ onMounted(() => {
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-family: "Corinthia", serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 3rem;
+  padding-top: 6px;
   cursor: pointer;
-}
-
-.nav-extras {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.nav-extras input {
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: white;
-}
-
-.hamburger {
-  width: 30px;
-  height: 3px;
-  background-color: white;
-  position: relative;
-}
-
-.hamburger::before,
-.hamburger::after {
-  content: '';
-  position: absolute;
-  width: 30px;
-  height: 3px;
-  background-color: white;
-  transition: all 0.3s ease-in-out;
-}
-
-.hamburger::before {
-  top: -8px;
-}
-
-.hamburger::after {
-  top: 8px;
 }
 
 .nav-links {
@@ -174,21 +111,19 @@ onMounted(() => {
   transition: background 0.3s;
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .nav-links li:hover {
-  background: #00bcd4;
+  background: var(--primary-color);
 }
 
 .nav-links li.active {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   font-weight: bold;
 }
 
 .cart-badge {
-  background-color: #ff3b3f;
-  color: white;
+  background-color: #b074cc;
   padding: 2px 8px;
   border-radius: 50%;
   font-size: 0.8rem;
@@ -214,18 +149,15 @@ onMounted(() => {
 
 .dropdown-menu li {
   padding: 10px 20px;
+  white-space: nowrap;
   cursor: pointer;
 }
 
 .dropdown-menu li:hover {
-  background: #00bcd4;
+  background: var(--primary-color);
 }
 
 @media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
-  }
-
   .nav-links {
     position: absolute;
     top: 60px;
@@ -246,10 +178,5 @@ onMounted(() => {
     width: 100%;
     text-align: center;
   }
-}
-
-body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
 }
 </style>

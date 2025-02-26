@@ -11,20 +11,28 @@
           :key="item.productId"
           class="cart-item"
       >
-        <h2>{{ item.product.name }}</h2>
-        <p>Price: {{ (item.product.price / 100).toFixed(2) }}€</p>
-        <p>Category: {{ item.product.category }}</p>
-        <p>Total: {{ ((item.quantity * item.product.price) / 100).toFixed(2) }}€</p>
-        <div class="quantity-controls">
-          <button @click="decreaseQuantity(item.productId)">-</button>
-          <span>{{ item.quantity }}</span>
-          <button @click="increaseQuantity(item.productId)">+</button>
+        <div class="cart-item-content">
+          <div>
+            <h2>{{ item.product.name }}</h2>
+            <p>Price: {{ (item.product.price / 100).toFixed(2) }}€</p>
+            <p>Category: {{ item.product.category }}</p>
+          </div>
+          <img :src="`${item.image}`" :alt="item.product.name" />
         </div>
-        <button @click="removeFromCart(item.productId)">Remove</button>
+        <div>
+          <div class="quantity-controls">
+            <button class="button-primary" @click="decreaseQuantity(item.productId)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button class="button-primary" @click="increaseQuantity(item.productId)">+</button>
+            <button class="button-primary" @click="removeFromCart(item.productId)">Remove</button>
+          </div>
+          <p>Total: {{ ((item.quantity * item.product.price) / 100).toFixed(2) }}€</p>
+        </div>
       </div>
 
       <!-- Kundendaten auf der Hauptseite -->
       <div class="customer-info-main">
+        <h2>Customer Information</h2>
         <input
             type="text"
             v-model="customerName"
@@ -39,7 +47,7 @@
 
       <!-- Auswahl der Zahlungsmethode auf der Hauptseite -->
       <div class="payment-selection">
-        <h3>Select Payment Method</h3>
+        <h2>Payment Information</h2>
         <label>
           <input type="radio" value="PAYPAL" v-model="paymentMethod" />
           PayPal
@@ -55,7 +63,7 @@
       </div>
 
       <!-- Checkout-Button -->
-      <button class="trigger-checkout" @click="openCheckoutModal">
+      <button class="trigger-checkout button-primary" @click="openCheckoutModal">
         Checkout
       </button>
     </div>
@@ -228,8 +236,7 @@ export default {
   },
   methods: {
     loadCart() {
-      const savedCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
-      this.cart = savedCart;
+      this.cart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
     },
     saveCart() {
       localStorage.setItem("shoppingCart", JSON.stringify(this.cart));
@@ -358,9 +365,12 @@ export default {
 </script>
 
 <style scoped>
+h2, h1 {
+  margin-top: 0;
+}
 /* Warenkorb-Items */
 .cart-item {
-  background: var(--background-light);
+  background: var(--background-white);
   padding: 20px;
   border-radius: var(--border-radius);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -371,11 +381,38 @@ export default {
   /* Dezentere Hover-Wirkung */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+.cart-item-content {
+  display: grid;
+  grid-template-columns: auto max-content;
+}
+.cart-item-content img {
+  max-width: 100%;
+  max-height: 100px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+div:has(>.quantity-controls) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+div:has(>.quantity-controls) > p {
+  margin: 0;
+}
 
 /* Kundendaten auf der Hauptseite */
 .customer-info-main {
-  text-align: center;
   margin: 20px 0;
+  background: var(--background-white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .customer-info-main input {
   padding: 10px;
@@ -389,18 +426,22 @@ export default {
 
 /* Zahlungsmethoden-Auswahl */
 .payment-selection {
-  text-align: center;
   margin: 20px 0;
+  background: var(--background-white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .payment-selection label {
   margin-right: 15px;
   font-weight: bold;
 }
+.payment-selection input {
+  width: min-content;
+}
 
 /* Checkout-Button auf Hauptseite */
 .trigger-checkout {
-  background-color: #28a745;
-  color: white;
   border: none;
   padding: 12px 20px;
   font-size: 16px;
@@ -408,9 +449,6 @@ export default {
   cursor: pointer;
   display: block;
   margin: 20px auto;
-}
-.trigger-checkout:hover {
-  background-color: #218838;
 }
 
 /* Modal Styles */

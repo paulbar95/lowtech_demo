@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { formatter } from "./PriceFormatter.js"
 import axios from "axios";
 
 const inventory = ref([]);
@@ -87,13 +88,13 @@ onMounted(() => {
     <div class="inventory-list">
       <div v-for="item in inventory" :key="item.id" class="inventory-item">
         <h3>{{ item.product.name }}</h3>
+        <p>{{ item.product.description }}</p>
         <p>Category: {{ item.product.category }}</p>
-        <p>Description: {{ item.product.description }}</p>
-        <p>Price: ${{ item.product.price }}</p>
+        <p>Price: {{ formatter.format(item.product.price / 100) }}</p>
         <p>Stock: {{ item.quantity }}</p>
         <div class="button-group">
           <input v-model.number="updatedQuantities[item.id]" type="number" min="0" />
-          <button class="button-secondary" @click="updateQuantity(item.id)">Update Quantity</button>
+          <button class="button-primary" @click="updateQuantity(item.id)">Update Quantity</button>
         </div>
       </div>
     </div>
@@ -101,6 +102,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+h1, h2, h3 {
+  margin-top: 0;
+}
 .inventory-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -108,7 +112,7 @@ onMounted(() => {
 }
 
 .inventory-item {
-  background: var(--background-light);
+  background: var(--background-white);
   padding: 15px;
   border-radius: var(--border-radius);
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
