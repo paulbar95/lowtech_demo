@@ -46,7 +46,7 @@ onMounted(() => {
             <i class="fas fa-box"></i> Products <i class="fas fa-caret-down"></i>
           </span>
           <ul v-if="isDropdownOpen" class="dropdown-menu">
-            <li @click="navigateTo('/products')">All Products</li>
+            <li @click="navigateTo('/products')">New Product</li>
             <li @click="navigateTo('/inventory')">Inventory</li>
           </ul>
         </li>
