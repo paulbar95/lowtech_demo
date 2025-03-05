@@ -24,12 +24,12 @@ set API_BASE_URL=http://backend:8080/api && docker-compose build
 ```
 Run:
 ```bash
-DB_URL="postgres_db:5432" DB_USER="postgres" DB_PASS="root" CORS_ALLOWED_ORIGINS="http://your-frontend-instance-ip" docker-compose up -d
+DB_HOST="postgres_db:5432" DB_USER="postgres" DB_PASS="root" CORS_ALLOWED_ORIGINS="http://your-frontend-instance-ip" docker-compose up -d
 ```
 
 Run for Windows cmd:
 ```bash
-set DB_URL=postgres_db:5432
+set DB_HOST=postgres_db:5432
 set DB_USER=postgres
 set DB_PASS=root
 set CORS_ALLOWED_ORIGINS=http://your-frontend-instance-ip
@@ -57,7 +57,7 @@ docker run -d --name postgres_db ^
 ```bash
 docker run -d --name webshop_backend ^
   -p 8080:8080 ^
-  -e DB_URL="your-db-instance-ip:5432" ^
+  -e DB_HOST="your-db-instance-ip:5432" ^
   -e DB_USER="postgres" ^
   -e DB_PASS="root" ^
   -e CORS_ALLOWED_ORIGINS="http://your-frontend-instance-ip" ^
@@ -74,7 +74,7 @@ docker run -d --name webshop_frontend ^
 
 | Variable Name  | Default Value | Description | 
 | ------------- | ------------- |------------- |
-| `DB_URL`  | `postgres_db:5432`  | The database host and port   |
+| ``  | `postgres_db:5432`  | The database host and port   |
 | `DB_USER`  | `postgres`  | The database username  |
 | `DB_PASS`  | `root`  | The database password  |
 | `CORS_ALLOWED_ORIGINS`  | `http://localhost,http://localhost:5173`  | The database username  |
